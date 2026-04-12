@@ -1,45 +1,46 @@
 @echo off
+chcp 65001 >nul
 echo ================================
-echo  Установка Rutube Transcriber
+echo  Ustanovka Rutube Transcriber
 echo ================================
 echo.
 
-:: Проверяем Python
+:: Proverjaem Python
 python --version >nul 2>&1
 if errorlevel 1 (
-    echo [ОШИБКА] Python не найден.
-    echo Скачай и установи Python с https://python.org/downloads
-    echo При установке поставь галочку "Add Python to PATH"
+    echo [OSHIBKA] Python ne najden.
+    echo Skachaj i ustanovi Python s https://python.org/downloads
+    echo Pri ustanovke postav' galochku "Add Python to PATH"
     pause
     exit /b 1
 )
 
-echo [1/3] Python найден
+echo [1/3] Python najden
 echo.
 
-:: Проверяем ffmpeg
+:: Proverjaem ffmpeg
 ffmpeg -version >nul 2>&1
 if errorlevel 1 (
-    echo [2/3] ffmpeg не найден. Устанавливаем через winget...
+    echo [2/3] ffmpeg ne najden. Ustanavlivaem cherez winget...
     winget install ffmpeg
     if errorlevel 1 (
         echo.
-        echo [ОШИБКА] Не удалось установить ffmpeg автоматически.
-        echo Установи вручную: winget install ffmpeg
-        echo Или через chocolatey: choco install ffmpeg
+        echo [OSHIBKA] Ne udalos' ustanovit' ffmpeg avtomaticheski.
+        echo Ustanovi vruchnuju: winget install ffmpeg
+        echo Ili cherez chocolatey: choco install ffmpeg
         pause
         exit /b 1
     )
 ) else (
-    echo [2/3] ffmpeg найден
+    echo [2/3] ffmpeg najden
 )
 
 echo.
-echo [3/3] Устанавливаем Python-зависимости...
+echo [3/3] Ustanavlivaem Python-zavisimosti...
 pip install -r requirements.txt
 
 echo.
 echo ================================
-echo  Готово! Запускай: python main.py
+echo  Gotovo! Zapuskaj: python main.py
 echo ================================
 pause
