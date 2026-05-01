@@ -31,7 +31,7 @@ def save(db_path: Path, video_id: str, url: str, title: str, transcription: str,
     con = sqlite3.connect(db_path)
     try:
         con.execute(
-            f"INSERT INTO videos (video_id, url, title, transcription, tag) VALUES (?, ?, ?, ?)",
+            f"INSERT INTO videos (video_id, url, title, transcription, tag) VALUES (?, ?, ?, ?, ?)",
             (video_id, url, title, transcription, tag),
         )
         con.commit()
