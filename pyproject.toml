@@ -1,0 +1,13 @@
+[project]
+name = "rutube-transcriber"
+version = "0.1.0"
+description = "Скачивает аудио с Рутуба, транскрибирует через Whisper, сохраняет в SQLite"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "openai-whisper>=20250625",
+    "yt-dlp>=2026.3.17",
+]
+
+[project.scripts]
+transcribe = "main:main"
