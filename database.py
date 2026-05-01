@@ -12,7 +12,8 @@ def init_db():
             video_id      TEXT    UNIQUE NOT NULL,
             url           TEXT    NOT NULL,
             title         TEXT,
-            transcription TEXT    NOT NULL
+            transcription TEXT    NOT NULL,
+            tag           TEXT
         )
     """)
     con.commit()
@@ -26,12 +27,12 @@ def is_exists(video_id: str) -> bool:
     return row is not None
 
 
-def save(video_id: str, url: str, title: str, transcription: str):
+def save(video_id: str, url: str, title: str, transcription: str, tag: str = 'NULL'):
     con = sqlite3.connect(DB_PATH)
     try:
         con.execute(
-            "INSERT INTO videos (video_id, url, title, transcription) VALUES (?, ?, ?, ?)",
-            (video_id, url, title, transcription),
+            f"INSERT INTO videos (video_id, url, title, transcription, tag) VALUES (?, ?, ?, ?)",
+            (video_id, url, title, transcription, tag),
         )
         con.commit()
     except sqlite3.IntegrityError:
@@ -43,7 +44,7 @@ def save(video_id: str, url: str, title: str, transcription: str):
 def get_all():
     con = sqlite3.connect(DB_PATH)
     rows = con.execute(
-        "SELECT video_id, url, title, transcription FROM videos ORDER BY id DESC"
+        "SELECT video_id, url, title, transcription, tag FROM videos ORDER BY id DESC"
     ).fetchall()
     con.close()
     return rows
