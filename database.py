@@ -4,8 +4,8 @@ from pathlib import Path
 DB_PATH = Path("transcriptions.db")
 
 
-def init_db():
-    con = sqlite3.connect(DB_PATH)
+def init_db(db_path: Path):
+    con = sqlite3.connect(db_path)
     con.execute("""
         CREATE TABLE IF NOT EXISTS videos (
             id            INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -20,15 +20,15 @@ def init_db():
     con.close()
 
 
-def is_exists(video_id: str) -> bool:
-    con = sqlite3.connect(DB_PATH)
+def is_exists(video_id: str, db_path: Path) -> bool:
+    con = sqlite3.connect(db_path)
     row = con.execute("SELECT 1 FROM videos WHERE video_id = ?", (video_id,)).fetchone()
     con.close()
     return row is not None
 
 
-def save(video_id: str, url: str, title: str, transcription: str, tag: str = 'NULL'):
-    con = sqlite3.connect(DB_PATH)
+def save(db_path: Path, video_id: str, url: str, title: str, transcription: str, tag: str = 'NULL'):
+    con = sqlite3.connect(db_path)
     try:
         con.execute(
             f"INSERT INTO videos (video_id, url, title, transcription, tag) VALUES (?, ?, ?, ?)",
@@ -41,8 +41,8 @@ def save(video_id: str, url: str, title: str, transcription: str, tag: str = 'NU
         con.close()
 
 
-def get_all():
-    con = sqlite3.connect(DB_PATH)
+def get_all(db_path: Path):
+    con = sqlite3.connect(db_path)
     rows = con.execute(
         "SELECT video_id, url, title, transcription, tag FROM videos ORDER BY id DESC"
     ).fetchall()

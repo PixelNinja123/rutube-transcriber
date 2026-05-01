@@ -2,19 +2,20 @@ import sys
 from pathlib import Path
 from downloader import download_audio
 from transcriber import transcribe
-from database import init_db, is_exists, save, get_all
+from database import init_db, is_exists, save, get_all, DB_PATH
 
 
-def process(url: str):
+def process(url: str, db_path: Path):
     video = download_audio(url)
 
-    if is_exists(video.video_id):
+    if is_exists(video.video_id, db_path):
         print(f"Uzhe v baze: {video.video_id}")
         return
 
     text = transcribe(video.audio_path)
 
     save(
+        db_path,
         video_id=video.video_id,
         url=video.url,
         title=video.title,
@@ -30,8 +31,8 @@ def process(url: str):
     print(f"   Simvolov: {len(text)}")
 
 
-def list_videos():
-    rows = get_all()
+def list_videos(db_path: Path):
+    rows = get_all(db_path)
     if not rows:
         print("Baza pustaja.")
         return
@@ -48,14 +49,14 @@ def list_videos():
 
 
 if __name__ == "__main__":
-    init_db()
+    init_db(DB_PATH)
 
     if "--list" in sys.argv:
-        list_videos()
+        list_videos(DB_PATH)
     elif len(sys.argv) >= 2:
-        process(sys.argv[1])
+        process(sys.argv[1], DB_PATH)
     else:
         url = input("Vvedi ssylku: ").strip()
         if not url:
             sys.exit(1)
-        process(url)
+        process(url, DB_PATH)
