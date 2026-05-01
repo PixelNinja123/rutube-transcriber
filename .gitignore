@@ -1,2 +1,4 @@
 .venv
 .idea
+rutube_transcriber.egg-info
+build
