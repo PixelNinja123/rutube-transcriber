@@ -1,61 +1,36 @@
 # Rutube Transcriber
 
-Скачивает видео с Рутуба, переводит в аудио, транскрибирует его через Whisper и сохраняет в локальную SQLite базу.
+Skachivает audio s Rutuba, transkribiruet cherez Whisper, soxranjaet v SQLite bazu.
 
-## Установка
-
-### 1. Скачай репозиторий
+## Ustanovka
 
 ```cmd
-git clone https://github.com/ВАШ_НИКНЕЙМ/rutube-transcriber.git
+git clone https://github.com/YOUR_USERNAME/rutube-transcriber.git
 cd rutube-transcriber
 ```
 
-Или скачай ZIP через кнопку **Code → Download ZIP** на GitHub и распакуй.
+Zapusti `run.bat` i vyberi punkt 3 (Ustanovit pakety).
 
-### 2. Запусти установку
+## Ispolzovanie
 
-Дважды кликни на **setup.bat** — он сам проверит и установит всё необходимое:
-- Python (если не установлен — покажет ссылку)
-- ffmpeg
-- Python-зависимости (yt-dlp, openai-whisper)
+Zapusti `run.bat`:
 
-> ⚠️ При первом запуске `python main.py` Whisper скачает модель (~1.5 ГБ). Это только один раз.
-
-## Использование
-
-```cmd
-# Спросит ссылку интерактивно
-python main.py
-
-# Передать ссылку сразу
-python main.py https://rutube.ru/video/...
-
-# Показать все видео в базе
-python main.py --list
-
-# Показать транскрипцию конкретного видео
-python main.py --show <video_id>
+```
+1. Transkribacija     — skachat video i transkribirovat
+2. Posmotret bazu     — spisok vseh video i transkribacij
+3. Ustanovit pakety   — proverit i doustanovit vsyo neobhodimoe
+4. Udalit pakety      — polnoe udalenie
 ```
 
-## Структура проекта
+## Struktura proekta
 
 ```
 rutube-transcriber/
-├── main.py           # точка входа
-├── downloader.py     # скачивание аудио с Рутуба
-├── transcriber.py    # транскрибация через Whisper
-├── database.py       # работа с SQLite
-├── requirements.txt  # зависимости
-├── setup.bat         # автоустановка для Windows
-└── .gitignore
+├── run.bat           — glavnyj fajl, zapuskat ego
+├── main.py
+├── downloader.py
+├── transcriber.py
+├── database.py
+├── pyproject.toml
+└── uv.lock
 ```
-
-## Как это работает
-
-1. `yt-dlp` скачивает аудиодорожку с Рутуба
-2. `Whisper` транскрибирует аудио в текст (модель `medium`, язык `ru`)
-3. Ссылка на видео и транскрипция сохраняются в `transcriptions.db`
-4. Аудиофайл удаляется — в базе остаётся только текст
-
-Одно и то же видео можно передать повторно — дубли игнорируются.

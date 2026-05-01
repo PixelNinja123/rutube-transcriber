@@ -1,9 +1,9 @@
 import whisper
+import warnings
+import tqdm
+import tqdm.std
 from pathlib import Path
 
-# Модель загружается один раз при старте.
-# Варианты: tiny, base, small, medium, large
-# Для русского рекомендуем medium — хороший баланс скорости и качества.
 MODEL_NAME = "medium"
 
 _model = None
@@ -12,23 +12,42 @@ _model = None
 def _get_model():
     global _model
     if _model is None:
-        print(f"[transcriber] Загружаем модель Whisper ({MODEL_NAME})...")
-        _model = whisper.load_model(MODEL_NAME)
-        print(f"[transcriber] Модель загружена.")
+        print("[transcriber] Zagruzhaem model Whisper...")
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            _model = whisper.load_model(MODEL_NAME)
+        print("[transcriber] Model zagružena.")
     return _model
 
 
 def transcribe(audio_path: str) -> str:
-    """
-    Транскрибирует аудиофайл и возвращает текст.
-    """
     path = Path(audio_path)
     if not path.exists():
-        raise FileNotFoundError(f"Аудиофайл не найден: {audio_path}")
+        raise FileNotFoundError(f"Fajl ne najden: {audio_path}")
 
-    print(f"[transcriber] Транскрибируем: {path.name}")
     model = _get_model()
-    result = model.transcribe(str(path), language="ru")
-    text = result["text"].strip()
-    print(f"[transcriber] Готово. Символов: {len(text)}")
-    return text
+    print("[transcriber] Nachinaem transkribaciju...")
+
+    original_tqdm = tqdm.std.tqdm
+
+    class ProgressBar(tqdm.std.tqdm):
+        def update(self, n=1):
+            super().update(n)
+            if self.total:
+                percent = int(self.n / self.total * 100)
+                bar = "#" * (percent // 5) + "-" * (20 - percent // 5)
+                print(f"\r  [{bar}] {percent}%", end="", flush=True)
+
+    tqdm.std.tqdm = ProgressBar
+    tqdm.tqdm = ProgressBar
+
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            result = model.transcribe(str(path), language="ru", verbose=False)
+    finally:
+        tqdm.std.tqdm = original_tqdm
+        tqdm.tqdm = original_tqdm
+
+    print(f"\r[transcriber] Gotovo! Simvolov: {len(result['text'].strip())}")
+    return result["text"].strip()
