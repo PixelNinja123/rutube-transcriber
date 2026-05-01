@@ -11,6 +11,3 @@ dependencies = [
 
 [project.scripts]
 transcribe = "main:main"
-
-[tool.setuptools]
-py-modules = ["main", "transcriber", "downloader", "database"]

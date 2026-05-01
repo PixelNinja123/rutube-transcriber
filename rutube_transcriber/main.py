@@ -1,8 +1,8 @@
 import sys
 from pathlib import Path
-from downloader import download_audio
-from transcriber import transcribe
-from database import init_db, is_exists, save, get_all, DB_PATH
+from rutube_transcriber.downloader import download_audio
+from rutube_transcriber.transcriber import transcribe
+from rutube_transcriber.database import init_db, is_exists, save, get_all, DB_PATH
 
 
 def process(url: str, db_path: Path):
